@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISTEMA NEXUS — Prueba de Acceso</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c10;
+  --surface: #0d1520;
+  --surface2: #111d2e;
+  --border: #1e3a5f;
+  --accent: #00e5ff;
+  --accent2: #ff3c5a;
+  --accent3: #ffe066;
+  --green: #39ff14;
+  --text: #cce8ff;
+  --muted: #5a8aaa;
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Barlow', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* SCANLINES */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.015) 2px, rgba(0,229,255,0.015) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* SCREENS */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ===================== INTRO SCREEN ===================== */
+#screen-intro {
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.intro-bg {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(0,80,150,0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.intro-content {
+  max-width: 680px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.nexus-logo {
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(0,229,255,0.5), 0 0 80px rgba(0,229,255,0.2);
+  margin-bottom: 0.3rem;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: 0 0 30px rgba(0,229,255,0.5), 0 0 80px rgba(0,229,255,0.2); }
+  50% { text-shadow: 0 0 50px rgba(0,229,255,0.8), 0 0 120px rgba(0,229,255,0.4); }
+}
+
+.nexus-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.intro-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  padding: 2.5rem;
+  text-align: left;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.intro-box::before {
+  content: 'MENSAJE ENTRANTE';
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  position: absolute;
+  top: -1px;
+  left: 1rem;
+  background: var(--surface);
+  padding: 0 0.5rem;
+  transform: translateY(-50%);
+}
+
+.intro-box p {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.intro-box p:last-child { margin-bottom: 0; }
+
+.intro-box strong { color: var(--accent); font-weight: 600; }
+
+.intro-box .sender {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 500px) { .rules-grid { grid-template-columns: 1fr; } }
+
+.rule-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+  font-size: 13px;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.rule-num {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.name-section {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.name-section label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.name-section input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid var(--accent);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 16px;
+  padding: 0.8rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.name-section input:focus { border-color: var(--accent); }
+.name-section input::placeholder { color: var(--muted); }
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1rem 3rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: #fff;
+  box-shadow: 0 0 30px rgba(0,229,255,0.4);
+}
+
+.btn-primary:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ===================== GAME SCREEN ===================== */
+#screen-game {
+  flex-direction: column;
+}
+
+/* TOP BAR */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbar-logo {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+}
+
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 1px solid var(--muted);
+  transition: all 0.3s;
+}
+
+.dot.done { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px var(--green); }
+.dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse-dot 1.5s infinite; }
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.timer-display {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--accent3);
+  letter-spacing: 0.1em;
+}
+
+.timer-display.urgent { color: var(--accent2); animation: blink 1s step-end infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.agent-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* MAIN GAME AREA */
+.game-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .game-area { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mission-list { list-style: none; }
+
+.mission-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.mission-item.done { color: var(--green); }
+.mission-item.active { color: var(--text); }
+
+.mission-icon {
+  font-family: var(--mono);
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mission-item.done .mission-icon::before { content: '✓'; color: var(--green); }
+.mission-item.active .mission-icon::before { content: '▶'; color: var(--accent); }
+.mission-item:not(.done):not(.active) .mission-icon::before { content: '○'; color: var(--border); }
+
+.code-fragment-area {
+  margin-top: 2rem;
+}
+
+.code-fragment-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.code-display {
+  font-family: var(--mono);
+  font-size: 20px;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(0,229,255,0.4);
+  display: flex;
+  gap: 0.5rem;
+}
+
+.code-char {
+  display: inline-block;
+  width: 28px;
+  height: 36px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  transition: all 0.3s;
+}
+
+.code-char.revealed {
+  border-color: var(--accent);
+  background: rgba(0,229,255,0.1);
+  box-shadow: 0 0 10px rgba(0,229,255,0.3);
+  animation: reveal-flash 0.6s ease-out;
+}
+
+@keyframes reveal-flash {
+  0% { background: var(--accent); color: var(--bg); }
+  100% { background: rgba(0,229,255,0.1); color: var(--accent); }
+}
+
+/* CHALLENGE PANEL */
+.challenge-panel {
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 52px);
+}
+
+.challenge-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.challenge-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 3px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.challenge-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.challenge-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.challenge-body p { margin-bottom: 0.8rem; }
+.challenge-body p:last-child { margin-bottom: 0; }
+.challenge-body strong { color: var(--accent); font-weight: 600; }
+.challenge-body em { color: var(--accent3); font-style: normal; font-weight: 600; }
+
+/* ANSWER SECTION */
+.answer-section { margin-bottom: 1.5rem; }
+
+.answer-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.answer-options { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.option-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0,229,255,0.05);
+}
+
+.option-btn.correct {
+  border-color: var(--green);
+  background: rgba(57,255,20,0.1);
+  color: var(--green);
+}
+
+.option-btn.wrong {
+  border-color: var(--accent2);
+  background: rgba(255,60,90,0.1);
+  color: var(--accent2);
+}
+
+.option-btn:disabled { cursor: not-allowed; }
+
+.option-letter {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.option-btn.correct .option-letter,
+.option-btn.wrong .option-letter { color: inherit; }
+
+/* FEEDBACK */
+.feedback-box {
+  padding: 1.2rem 1.4rem;
+  border-left: 3px solid;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+  line-height: 1.6;
+  display: none;
+}
+
+.feedback-box.correct {
+  background: rgba(57,255,20,0.07);
+  border-color: var(--green);
+  color: #a8f5a0;
+  display: block;
+}
+
+.feedback-box.wrong {
+  background: rgba(255,60,90,0.07);
+  border-color: var(--accent2);
+  color: #ffaaaa;
+  display: block;
+}
+
+.feedback-box strong { color: inherit; font-weight: 700; }
+
+.btn-next {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+.btn-next:hover { background: var(--accent); color: var(--bg); }
+
+/* INPUT TYPE TEXT */
+.answer-input-wrap { display: flex; gap: 0.5rem; }
+
+.answer-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid var(--accent);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
+
+.answer-input:focus { border-color: var(--accent); }
+
+.btn-submit {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.btn-submit:hover { background: #fff; }
+
+/* SORT / DRAG CHALLENGE */
+.sort-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+
+.sort-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1.2rem;
+  cursor: grab;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.15s;
+  user-select: none;
+}
+
+.sort-item:active { cursor: grabbing; }
+.sort-item.dragging { opacity: 0.5; border-color: var(--accent); }
+.sort-item.drag-over { border-color: var(--accent3); background: rgba(255,224,102,0.05); }
+
+.sort-handle {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* CHECKBOX MULTI */
+.check-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+
+.check-opt {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.15s;
+}
+
+.check-opt:hover { border-color: var(--accent); background: rgba(0,229,255,0.03); }
+.check-opt.selected { border-color: var(--accent); background: rgba(0,229,255,0.07); }
+.check-opt.selected .check-box { background: var(--accent); border-color: var(--accent); }
+
+.check-opt.correct-sel { border-color: var(--green) !important; background: rgba(57,255,20,0.07) !important; }
+.check-opt.wrong-sel { border-color: var(--accent2) !important; background: rgba(255,60,90,0.07) !important; }
+
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--muted);
+  flex-shrink: 0;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+/* ===================== END SCREEN ===================== */
+#screen-end {
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.end-content { max-width: 640px; width: 100%; }
+
+.end-title {
+  font-family: var(--mono);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 0.15em;
+  color: var(--green);
+  text-shadow: 0 0 40px rgba(57,255,20,0.5);
+  margin-bottom: 0.5rem;
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { text-shadow: 0 0 40px rgba(57,255,20,0.5); }
+  50% { text-shadow: 0 0 70px rgba(57,255,20,0.8); }
+}
+
+.end-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 3rem;
+}
+
+.end-code-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--green);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.end-code-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.end-code {
+  font-family: var(--mono);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  letter-spacing: 0.4em;
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(57,255,20,0.4);
+  margin-bottom: 1rem;
+}
+
+.end-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+
+.stat-val {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--mono);
+}
+
+.copy-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  border: 1px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.copy-btn:hover { background: var(--green); color: var(--bg); }
+
+/* BONUS SCREEN */
+#screen-bonus {
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.bonus-content { max-width: 700px; width: 100%; }
+
+.bonus-header {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--accent3);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.bonus-title {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  z-index: 1000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 300px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.danger { border-left-color: var(--accent2); }
+.toast.success { border-left-color: var(--green); }
+
+/* HINT BOX */
+.hint-toggle {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  background: none;
+  border: 1px dashed var(--border);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.hint-toggle:hover { border-color: var(--accent3); color: var(--accent3); }
+
+.hint-content {
+  background: rgba(255,224,102,0.05);
+  border: 1px solid rgba(255,224,102,0.2);
+  border-left: 2px solid var(--accent3);
+  padding: 1rem 1.2rem;
+  font-size: 13px;
+  color: #e0c850;
+  margin-bottom: 1rem;
+  display: none;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.hint-content.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ===================== INTRO ===================== -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-bg"></div>
+  <div class="intro-content">
+    <div class="nexus-logo">NEXUS</div>
+    <div class="nexus-sub">Sistema de Seguridad Corporativa · v4.1.7</div>
+
+    <div class="intro-box">
+      <div class="sender">DE: director@nexus-corp.internal &nbsp;·&nbsp; ASUNTO: Prueba de acceso — Nivel Analista</div>
+      <p>Has sido seleccionado para unirte al equipo de ciberseguridad de <strong>NEXUS Corporation</strong>. Antes de darte acceso a los sistemas internos, necesito verificar que estás preparado.</p>
+      <p>He diseñado personalmente <strong>6 pruebas</strong> que cubren las áreas críticas que todo analista debe dominar: seguridad de dispositivos, gestión de contraseñas, identidad digital, privacidad, amenazas en la red y bienestar digital.</p>
+      <p>Supera todas las pruebas y obtendrás el <strong>código de acceso al sistema</strong>. Tienes <strong>45 minutos</strong>. Si acabas antes, hay trabajo adicional esperándote.</p>
+      <p style="color: var(--muted); font-size: 13px;">— Directora de Seguridad, <em>Claudia V.</em></p>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-item"><span class="rule-num">01</span> Puedes usar el dosier de consulta como referencia</div>
+      <div class="rule-item"><span class="rule-num">02</span> Cada prueba superada desbloquea un fragmento del código</div>
+      <div class="rule-item"><span class="rule-num">03</span> Las respuestas incorrectas dan pista de por qué fallaron</div>
+      <div class="rule-item"><span class="rule-num">04</span> Al terminar, copia el resumen y entrégaselo al profesor</div>
+    </div>
+
+    <div class="name-section">
+      <label>Identificación del analista</label>
+      <input type="text" id="agent-name" placeholder="Escribe tu nombre completo..." maxlength="50">
+    </div>
+
+    <button class="btn-primary" onclick="startGame()" id="start-btn" disabled>
+      INICIAR PRUEBA DE ACCESO
+    </button>
+  </div>
+</div>
+
+<!-- ===================== GAME ===================== -->
+<div id="screen-game" class="screen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">NEXUS</span>
+      <div class="progress-wrap">
+        <div class="progress-dots" id="progress-dots"></div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="agent-tag" id="agent-tag"></span>
+      <span class="timer-display" id="timer">45:00</span>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div class="sidebar">
+      <div class="sidebar-title">Estado de misiones</div>
+      <ul class="mission-list" id="mission-list"></ul>
+
+      <div class="code-fragment-area">
+        <div class="code-fragment-title">Código de acceso</div>
+        <div class="code-display" id="code-display"></div>
+      </div>
+    </div>
+
+    <div class="challenge-panel" id="challenge-panel">
+      <!-- Contenido dinámico -->
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BONUS ===================== -->
+<div id="screen-bonus" class="screen">
+  <div class="bonus-content">
+    <div class="bonus-header">⚡ NIVEL EXTRA — RETO AVANZADO</div>
+    <div class="bonus-title">Acceso completado. Nuevo encargo de la Directora.</div>
+
+    <div id="bonus-challenges"></div>
+  </div>
+</div>
+
+<!-- ===================== END ===================== -->
+<div id="screen-end" class="screen">
+  <div class="end-content">
+    <div class="end-title">ACCESO CONCEDIDO</div>
+    <div class="end-sub">Analista verificado · Sistema NEXUS</div>
+
+    <div class="end-code-box">
+      <div class="end-code-label">Código de acceso completo</div>
+      <div class="end-code" id="end-code-display">— — — — — —</div>
+    </div>
+
+    <div class="end-stats">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-correct">0</div>
+        <div class="stat-label">Respuestas correctas</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-errors">0</div>
+        <div class="stat-label">Errores cometidos</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-time">—</div>
+        <div class="stat-label">Tiempo empleado</div>
+      </div>
+    </div>
+
+    <button class="copy-btn" onclick="copyReport()">COPIAR RESUMEN PARA ENTREGAR</button>
+    <p style="font-size:12px; color: var(--muted); font-family: var(--mono); margin-top: 1rem;">
+      Copia el resumen y pégalo en el documento que te indique el profesor/a.
+    </p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const CODE_CHARS = ['N','X','7','4','K','2'];
+
+const MISSIONS = [
+  "Actualización y accesos",
+  "Gestión de contraseñas",
+  "Identidad digital",
+  "Privacidad en redes",
+  "Amenazas en la red",
+  "Bienestar digital"
+];
+
+const CHALLENGES = [
+  // --- PRUEBA 1: Seguridad de dispositivos ---
+  {
+    id: 1,
+    tag: "PRUEBA 01 · Seguridad de dispositivos",
+    title: "El dispositivo vulnerable",
+    type: "single",
+    body: `<p>Llega a tu bandeja de entrada un informe de auditoría. El técnico describe el siguiente escenario:</p>
+    <p><em>"El dispositivo del empleado lleva 8 meses sin actualizarse. Tiene instaladas 3 apps de origen desconocido que nunca se han revisado. No tiene código de bloqueo de pantalla. Sin embargo, tiene un antivirus actualizado."</em></p>
+    <p>La Directora te pregunta: <strong>¿cuál es el problema de mayor riesgo en este dispositivo?</strong></p>`,
+    options: [
+      "Tener el antivirus instalado pero no otras herramientas de seguridad",
+      "Las apps de origen desconocido instaladas sin revisión",
+      "No tener código de bloqueo de pantalla",
+      "El sistema operativo sin actualizar durante 8 meses"
+    ],
+    correct: 3,
+    feedback_correct: "Correcto. Un sistema operativo sin actualizar tiene vulnerabilidades conocidas y documentadas que los atacantes pueden explotar directamente. Los fabricantes publican parches de seguridad precisamente para cerrarlas. Es el riesgo base sobre el que se construyen todos los demás.",
+    feedback_wrong: "No exactamente. Aunque ese problema es real, el mayor riesgo es el sistema sin actualizar. Las actualizaciones cierran vulnerabilidades conocidas y documentadas. Un atacante puede explotar esas brechas de forma automatizada sin necesidad de nada más.",
+    hint: "Piensa en qué permite que todos los demás problemas sean más peligrosos. ¿Qué es lo que los fabricantes lanzan específicamente para cerrar brechas de seguridad?",
+    code_fragment: "N"
+  },
+
+  // --- PRUEBA 2: Contraseñas ---
+  {
+    id: 2,
+    tag: "PRUEBA 02 · Gestión de contraseñas",
+    title: "La contraseña filtrada",
+    type: "multi",
+    body: `<p>El sistema de análisis de NEXUS detecta que las credenciales de un empleado han aparecido en una filtración de datos. Al revisar su perfil de seguridad encuentras lo siguiente:</p>
+    <ul style="margin: 1rem 0 1rem 1.5rem; line-height: 2; font-size: 13px;">
+      <li>Contraseña: <code>maria1987</code></li>
+      <li>La misma contraseña en 7 servicios distintos</li>
+      <li>Sin autenticación de dos factores en ninguna cuenta</li>
+      <li>Lleva 4 años sin cambiarla</li>
+    </ul>
+    <p><strong>Selecciona TODAS las malas prácticas de seguridad que identificas</strong> (puede haber más de una):</p>`,
+    options: [
+      "La contraseña contiene datos personales predecibles (nombre + año)",
+      "Reutilizar la misma contraseña en múltiples servicios",
+      "No tener autenticación en dos factores activada",
+      "La contraseña tiene 9 caracteres, que es suficiente longitud",
+      "No renovar la contraseña durante años"
+    ],
+    correct: [0, 1, 2, 4],
+    feedback_correct: "Perfecto. Has identificado los 4 problemas: contraseña predecible (nombre+año), reutilización en múltiples servicios, ausencia de 2FA y falta de renovación. La opción D es la única correcta: 9 caracteres no es suficiente, pero el enunciado pedía identificar malas prácticas, y esa afirmación de que '9 es suficiente' es incorrecta, no es una mala práctica en sí.",
+    feedback_wrong: "Revisa tu selección. Hay 4 malas prácticas claras: la contraseña contiene datos personales (nombre y año de nacimiento), se reutiliza en múltiples servicios, no hay 2FA y no se renueva. La opción sobre los 9 caracteres es una trampa: 9 caracteres no es suficiente, pero la afirmación falsa que contiene no es una 'mala práctica' sino un error de apreciación.",
+    hint: "Lee cada opción con cuidado. Una de ellas es una afirmación incorrecta sobre la longitud, no una mala práctica que el empleado haya cometido.",
+    code_fragment: "X"
+  },
+
+  // --- PRUEBA 3: Identidad y huella digital ---
+  {
+    id: 3,
+    tag: "PRUEBA 03 · Identidad digital",
+    title: "La huella que no desaparece",
+    type: "single",
+    body: `<p>Un amigo te cuenta que publicó en redes sociales una foto comprometida hace 3 años. Ahora quiere borrarla para que no afecte a una solicitud de trabajo. Consigue eliminarla de su perfil, pero tú le informas de algo importante que no está teniendo en cuenta.</p>
+    <p><strong>¿Cuál de estas afirmaciones sobre la huella digital es correcta?</strong></p>`,
+    options: [
+      "Al borrar el contenido de la red social, desaparece por completo de Internet",
+      "Solo queda rastro si la publicación tuvo muchos likes o comentarios",
+      "Aunque borres el contenido, puede haber copias en caché, capturas o archivos de terceros",
+      "La huella digital solo afecta a menores de edad, los adultos tienen protección legal automática"
+    ],
+    correct: 2,
+    feedback_correct: "Exacto. La huella digital es prácticamente permanente. Aunque borres el contenido original, pueden existir capturas de pantalla hechas por otros usuarios, copias en caché de buscadores como Google, archivos en la Wayback Machine o incluso datos vendidos a terceros antes del borrado. Lo que se publica en Internet, difícilmente desaparece del todo.",
+    feedback_wrong: "Incorrecto. Borrar un contenido de tu perfil no lo elimina de Internet. Pueden existir capturas de terceros, copias en caché de buscadores, archivos históricos y datos ya transferidos a otras plataformas. La huella digital es prácticamente permanente, independientemente de la edad o la popularidad de la publicación.",
+    hint: "¿Qué ocurre con los buscadores cuando indexan una página? ¿Y con las personas que ya vieron el contenido antes de que lo borraras?",
+    code_fragment: "7"
+  },
+
+  // --- PRUEBA 4: Privacidad en redes sociales ---
+  {
+    id: 4,
+    tag: "PRUEBA 04 · Privacidad en redes sociales",
+    title: "El perfil de Valeria",
+    type: "multi",
+    body: `<p>Recibes el encargo de auditar el perfil público de Instagram de Valeria, una empleada que ha solicitado acceso a sistemas sensibles. Su perfil muestra:</p>
+    <ul style="margin: 1rem 0 1rem 1.5rem; line-height: 2; font-size: 13px;">
+      <li>Perfil público visible para cualquier persona</li>
+      <li>Foto con la fachada de su casa etiquetada con ubicación</li>
+      <li>Publicación: "primer día en NEXUS Corp, oficina en la planta 7 🏢"</li>
+      <li>Cumpleaños y ciudad natal visibles en el perfil</li>
+      <li>Seguidora de 1.200 personas, de las cuales no conoce personalmente a 900</li>
+    </ul>
+    <p><strong>Selecciona TODOS los riesgos de privacidad que identificas:</strong></p>`,
+    options: [
+      "Perfil público: cualquier persona puede ver toda su actividad",
+      "Fotografiar y etiquetar la ubicación de su casa es un riesgo de seguridad física",
+      "Revelar dónde trabaja y en qué planta facilita la ingeniería social",
+      "Tener 1.200 seguidores en total es en sí mismo un riesgo",
+      "Datos como cumpleaños y ciudad pueden usarse para adivinar contraseñas o verificar identidad"
+    ],
+    correct: [0, 1, 2, 4],
+    feedback_correct: "Excelente análisis. Los 4 riesgos reales son: el perfil público (acceso sin filtro), la ubicación de su casa (riesgo físico directo), revelar el lugar de trabajo con detalle (facilita ataques de ingeniería social) y los datos personales visibles (útiles para adivinar contraseñas o suplantar identidad en verificaciones). Tener 1.200 seguidores no es un riesgo en sí mismo.",
+    feedback_wrong: "Casi. El número de seguidores no es un riesgo per se: lo que importa es si los conoces o no, pero eso ya está cubierto por el perfil público. Los 4 riesgos reales son: perfil público, ubicación del domicilio, información laboral detallada y datos personales expuestos.",
+    hint: "¿Cuál de las opciones describe un número o cantidad, en vez de una exposición de información sensible?",
+    code_fragment: "4"
+  },
+
+  // --- PRUEBA 5: Amenazas ---
+  {
+    id: 5,
+    tag: "PRUEBA 05 · Amenazas en la red",
+    title: "El correo sospechoso",
+    type: "single",
+    body: `<p>Un empleado reenvía a tu buzón este correo que ha recibido:</p>
+    <div style="background: #0a0f18; border: 1px solid #2a4060; padding: 1.2rem; margin: 1rem 0; font-size: 13px; font-family: 'Share Tech Mono', monospace; line-height: 1.8;">
+      <span style="color: #5a8aaa;">DE:</span> soporte@banco-seguro-online.net<br>
+      <span style="color: #5a8aaa;">ASUNTO:</span> ⚠️ URGENTE: Su cuenta ha sido bloqueada<br><br>
+      <span style="color: #cce8ff;">Estimado cliente,<br><br>
+      Hemos detectado actividad inusual en su cuenta. Por su seguridad, su acceso ha sido <strong style="color:#ff3c5a;">SUSPENDIDO TEMPORALMENTE</strong>.<br><br>
+      Para reactivarla en las próximas 24 horas, haga clic aquí y verifique sus datos:<br>
+      <span style="color: #00e5ff; text-decoration: underline;">www.banco-seguro-online.net/verificar-ahora</span><br><br>
+      Si no actúa, su cuenta será cerrada definitivamente.<br><br>
+      Atención al Cliente · Banco Seguro</span>
+    </div>
+    <p><strong>¿Qué tipo de ataque es este y cuál es la señal de alerta más clara?</strong></p>`,
+    options: [
+      "Es malware; la señal de alerta es que el correo tiene un enlace",
+      "Es phishing; la señal más clara es el dominio del remitente, que no es el banco oficial",
+      "Es ransomware; la señal de alerta es la urgencia artificial del mensaje",
+      "Es ingeniería social avanzada; solo puede detectarlo un experto en ciberseguridad"
+    ],
+    correct: 1,
+    feedback_correct: "Correcto. Es un ataque de phishing. La señal más inequívoca es el dominio del remitente: 'banco-seguro-online.net' no es el dominio oficial de ningún banco real. Los bancos legítimos siempre usan su dominio propio. La urgencia y la amenaza de cierre de cuenta son técnicas de presión psicológica típicas del phishing, pero el dominio falso es la prueba definitiva.",
+    feedback_wrong: "No es correcto. Se trata de phishing: una suplantación de identidad para robar credenciales. La señal más clara y objetiva es el dominio del remitente ('banco-seguro-online.net'), que no corresponde a ningún banco legítimo. Aunque la urgencia artificial también es una señal, el dominio falso es la prueba concluyente.",
+    hint: "Fíjate bien en la dirección de correo del remitente. Los bancos siempre envían correos desde sus dominios oficiales (ej: @bancosantander.es). ¿Ese dominio parece legítimo?",
+    code_fragment: "K"
+  },
+
+  // --- PRUEBA 6: Bienestar digital ---
+  {
+    id: 6,
+    tag: "PRUEBA 06 · Bienestar digital",
+    title: "El informe de bienestar",
+    type: "single",
+    body: `<p>La Directora está preparando un protocolo de bienestar digital para los empleados de NEXUS. Te pide que identifiques cuál de las siguientes afirmaciones sobre el impacto del uso digital en la salud <strong>es correcta</strong>:</p>`,
+    options: [
+      "La fatiga visual por pantallas es exclusiva de personas mayores de 40 años y no afecta a jóvenes",
+      "El modo noche de los dispositivos elimina completamente el impacto de la luz azul en el sueño",
+      "El uso excesivo de redes sociales puede generar ansiedad debido a la comparación social con imágenes editadas",
+      "Establecer límites de tiempo de pantalla solo es necesario para niños, no para adultos ni adolescentes"
+    ],
+    correct: 2,
+    feedback_correct: "Correcto. Las redes sociales muestran una versión curada y editada de la realidad. La comparación constante con esa imagen distorsionada es una fuente documentada de ansiedad, baja autoestima e insatisfacción. Este efecto no discrimina por edad: afecta especialmente a adolescentes y adultos jóvenes. Las otras tres afirmaciones son falsas.",
+    feedback_wrong: "Esa afirmación es incorrecta. La respuesta correcta es que las redes sociales pueden generar ansiedad por comparación social con imágenes editadas. Las otras opciones contienen afirmaciones falsas: la fatiga visual afecta a todas las edades, el modo noche no elimina completamente el impacto de la luz azul, y los límites de pantalla son beneficiosos a cualquier edad.",
+    hint: "Descarta las opciones que contienen afirmaciones absolutas como 'exclusiva', 'completamente' o 'solo'. En salud digital, pocas cosas son tan categóricas.",
+    code_fragment: "2"
+  }
+];
+
+const BONUS_CHALLENGES = [
+  {
+    id: "B1",
+    tag: "RETO EXTRA A · Análisis crítico",
+    title: "Evalúa el nivel de seguridad",
+    type: "single",
+    body: `<p>Un compañero analista describe su configuración de seguridad personal:</p>
+    <ul style="margin: 1rem 0 1rem 1.5rem; line-height: 2; font-size: 13px;">
+      <li>Contraseña del móvil: <code>2580</code> (las cuatro teclas del centro en vertical)</li>
+      <li>Actualiza apps solo cuando "tiene tiempo", aproximadamente cada 6 meses</li>
+      <li>Usa la misma contraseña para el correo del trabajo y el personal, pero es "muy larga": <code>nexuscorp2024</code></li>
+      <li>Tiene activado el 2FA solo en su cuenta bancaria</li>
+      <li>Descargó hace un mes una app de productividad de una web de terceros porque "en la Play Store no estaba"</li>
+    </ul>
+    <p>En una escala del 1 al 10, ¿cómo valorarías su seguridad? <strong>Elige la valoración más ajustada y justificada:</strong></p>`,
+    options: [
+      "7/10 — Tiene 2FA bancario y la contraseña es larga, lo cual es suficiente",
+      "4/10 — Hay varios problemas pero el 2FA bancario y la longitud de contraseña compensan",
+      "2/10 — Múltiples vulnerabilidades críticas: patrón predecible, reutilización de contraseña, app de origen desconocido y actualizaciones tardías",
+      "5/10 — Nivel medio, algunos problemas menores pero nada crítico"
+    ],
+    correct: 2,
+    feedback_correct: "Exacto. El nivel real es muy bajo. El patrón 2580 es uno de los más usados y primeros en probarse. 'nexuscorp2024' incluye el nombre de la empresa (predecible) y el año (predecible). Reutilizarla en dos cuentas multiplica el riesgo. La app de origen externo es un vector de malware clásico. Las actualizaciones tardías dejan brechas abiertas. El 2FA bancario es lo único positivo, pero no compensa el resto.",
+    feedback_wrong: "La valoración correcta es 2/10. El perfil acumula múltiples vulnerabilidades críticas: patrón predecible, contraseña con datos obvios (empresa+año), reutilización en cuentas críticas, app de origen desconocido y actualizaciones tardías. Un solo 2FA no compensa todo eso.",
+    hint: "Haz una lista mental de todo lo que está mal. ¿Cuántos problemas son realmente críticos?",
+    code_fragment: ""
+  },
+  {
+    id: "B2",
+    tag: "RETO EXTRA B · Caso real",
+    title: "¿Qué harías tú?",
+    type: "single",
+    body: `<p>Un compañero de clase te muestra en su móvil una captura de pantalla de una conversación privada. En ella aparecen mensajes íntimos de otra persona del instituto, obtenidos sin su consentimiento. Te dice: "es que me la mandó alguien, yo no la he difundido".</p>
+    <p><strong>¿Cuál es la respuesta más correcta y responsable?</strong></p>`,
+    options: [
+      "No pasa nada si no la difundes tú, la responsabilidad es de quien la envió originalmente",
+      "Solo es un problema si la persona de la foto se entera",
+      "Tener, guardar o ver contenido íntimo de otra persona sin su consentimiento forma parte del problema; lo correcto es borrarlo y no difundirlo",
+      "Es un tema entre ellos, lo mejor es no meterse"
+    ],
+    correct: 2,
+    feedback_correct: "Correcto. Aunque no seas quien la difundió originalmente, tener, guardar o visualizar imágenes íntimas de alguien sin su consentimiento también forma parte del ciclo de daño. Lo responsable es no guardarla, no reenviarla y, si la situación lo requiere, comunicarlo a un adulto de confianza. En España, la difusión de este tipo de contenido es un delito tipificado en el Código Penal.",
+    feedback_wrong: "La respuesta correcta es que tener o guardar el contenido también forma parte del problema. La responsabilidad no recae solo en quien lo difunde originalmente. Lo correcto es borrarlo, no reenviarlo y, si es necesario, comunicarlo a un adulto. En España, la difusión de imágenes íntimas sin consentimiento es un delito.",
+    hint: "¿El daño a la víctima depende de quién sea el responsable original, o del hecho en sí de que el contenido circule?",
+    code_fragment: ""
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  agentName: '',
+  currentChallenge: 0,
+  correctAnswers: 0,
+  totalErrors: 0,
+  codeFragments: Array(6).fill(null),
+  startTime: null,
+  timerInterval: null,
+  timeLeft: 45 * 60,
+  phase: 'main', // 'main' | 'bonus'
+  bonusCurrent: 0,
+  bonusCorrect: 0
+};
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('agent-name').addEventListener('input', function() {
+  document.getElementById('start-btn').disabled = this.value.trim().length < 2;
+});
+
+document.getElementById('agent-name').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.trim().length >= 2) startGame();
+});
+
+function startGame() {
+  state.agentName = document.getElementById('agent-name').value.trim();
+  state.startTime = Date.now();
+  showScreen('game');
+  buildUI();
+  startTimer();
+  loadChallenge(0);
+}
+
+function buildUI() {
+  document.getElementById('agent-tag').textContent = state.agentName.toUpperCase();
+
+  // Progress dots
+  const dotsEl = document.getElementById('progress-dots');
+  dotsEl.innerHTML = CHALLENGES.map((_, i) =>
+    `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`
+  ).join('');
+
+  // Mission list
+  const missionEl = document.getElementById('mission-list');
+  missionEl.innerHTML = CHALLENGES.map((c, i) =>
+    `<li class="mission-item ${i === 0 ? 'active' : ''}" id="mission-${i}">
+      <span class="mission-icon"></span>${MISSIONS[i]}
+    </li>`
+  ).join('');
+
+  // Code display
+  const codeEl = document.getElementById('code-display');
+  codeEl.innerHTML = Array(6).fill(0).map((_, i) =>
+    `<div class="code-char" id="code-${i}">?</div>`
+  ).join('');
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerDisplay();
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timerInterval);
+      showToast('⏱ Tiempo agotado', 'danger');
+      setTimeout(() => finishGame(), 2000);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(state.timeLeft / 60);
+  const s = state.timeLeft % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer-display' + (state.timeLeft < 120 ? ' urgent' : '');
+}
+
+function getElapsedTime() {
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ============================================================
+// CHALLENGE LOADER
+// ============================================================
+function loadChallenge(index) {
+  state.currentChallenge = index;
+  const c = state.phase === 'bonus' ? BONUS_CHALLENGES[index] : CHALLENGES[index];
+  const panel = document.getElementById('challenge-panel');
+
+  // Update nav
+  if (state.phase === 'main') {
+    CHALLENGES.forEach((_, i) => {
+      const dot = document.getElementById(`dot-${i}`);
+      const mission = document.getElementById(`mission-${i}`);
+      if (dot) dot.className = 'dot' + (i < index ? ' done' : i === index ? ' active' : '');
+      if (mission) mission.className = 'mission-item' + (i < index ? ' done' : i === index ? ' active' : '');
+    });
+  }
+
+  let answerHTML = '';
+  if (c.type === 'single') {
+    answerHTML = `<div class="answer-options">
+      ${c.options.map((opt, i) => `
+        <button class="option-btn" onclick="selectSingle(${i})" id="opt-${i}">
+          <span class="option-letter">${String.fromCharCode(65+i)}</span>
+          ${opt}
+        </button>`).join('')}
+    </div>`;
+  } else if (c.type === 'multi') {
+    answerHTML = `<div class="check-options" id="check-options">
+      ${c.options.map((opt, i) => `
+        <div class="check-opt" onclick="toggleCheck(${i})" id="chk-${i}">
+          <div class="check-box" id="chkbox-${i}"></div>
+          <span>${opt}</span>
+        </div>`).join('')}
+    </div>
+    <button class="btn-submit" onclick="submitMulti()">CONFIRMAR SELECCIÓN</button>`;
+  }
+
+  panel.innerHTML = `
+    <div>
+      <div class="challenge-header">
+        <span class="challenge-tag">${c.tag}</span>
+      </div>
+      <div class="challenge-title">${c.title}</div>
+      <div class="challenge-body">${c.body}</div>
+      <div class="answer-section">
+        <span class="answer-label">${c.type === 'multi' ? 'Selecciona todas las que correspondan' : 'Selecciona la respuesta correcta'}</span>
+        ${answerHTML}
+      </div>
+      <button class="hint-toggle" onclick="toggleHint()">💡 Pedir pista</button>
+      <div class="hint-content" id="hint-box">${c.hint}</div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="btn-next" id="btn-next" onclick="nextChallenge()">SIGUIENTE PRUEBA →</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// ANSWER LOGIC
+// ============================================================
+function selectSingle(idx) {
+  const c = state.phase === 'bonus' ? BONUS_CHALLENGES[state.currentChallenge] : CHALLENGES[state.currentChallenge];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (idx === c.correct) {
+    buttons[idx].classList.add('correct');
+    showFeedback(true, c.feedback_correct);
+    if (state.phase === 'main') revealCode(state.currentChallenge);
+    state.correctAnswers++;
+  } else {
+    buttons[idx].classList.add('wrong');
+    buttons[c.correct].classList.add('correct');
+    showFeedback(false, c.feedback_wrong);
+    state.totalErrors++;
+  }
+  document.getElementById('btn-next').style.display = 'inline-block';
+}
+
+let multiSelected = [];
+
+function toggleCheck(idx) {
+  const el = document.getElementById(`chk-${idx}`);
+  const box = document.getElementById(`chkbox-${idx}`);
+  if (multiSelected.includes(idx)) {
+    multiSelected = multiSelected.filter(i => i !== idx);
+    el.classList.remove('selected');
+    box.textContent = '';
+  } else {
+    multiSelected.push(idx);
+    el.classList.add('selected');
+    box.textContent = '✓';
+  }
+}
+
+function submitMulti() {
+  const c = state.phase === 'bonus' ? BONUS_CHALLENGES[state.currentChallenge] : CHALLENGES[state.currentChallenge];
+  const correct = c.correct;
+  const isCorrect = correct.length === multiSelected.length && correct.every(v => multiSelected.includes(v));
+
+  document.querySelectorAll('.check-opt').forEach(el => el.style.pointerEvents = 'none');
+  document.querySelector('.btn-submit').style.display = 'none';
+
+  correct.forEach(i => {
+    document.getElementById(`chk-${i}`).classList.add('correct-sel');
+  });
+  multiSelected.filter(i => !correct.includes(i)).forEach(i => {
+    document.getElementById(`chk-${i}`).classList.add('wrong-sel');
+  });
+
+  if (isCorrect) {
+    if (state.phase === 'main') revealCode(state.currentChallenge);
+    state.correctAnswers++;
+    showFeedback(true, c.feedback_correct);
+  } else {
+    state.totalErrors++;
+    showFeedback(false, c.feedback_wrong);
+  }
+
+  multiSelected = [];
+  document.getElementById('btn-next').style.display = 'inline-block';
+}
+
+function showFeedback(correct, text) {
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = `<strong>${correct ? '✓ CORRECTO' : '✗ INCORRECTO'}</strong> — ${text}`;
+}
+
+function toggleHint() {
+  const hint = document.getElementById('hint-box');
+  hint.classList.toggle('visible');
+}
+
+// ============================================================
+// CODE REVEAL
+// ============================================================
+function revealCode(challengeIndex) {
+  const char = CHALLENGES[challengeIndex].code_fragment;
+  state.codeFragments[challengeIndex] = char;
+  const el = document.getElementById(`code-${challengeIndex}`);
+  el.textContent = char;
+  el.classList.add('revealed');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function nextChallenge() {
+  if (state.phase === 'main') {
+    if (state.currentChallenge < CHALLENGES.length - 1) {
+      loadChallenge(state.currentChallenge + 1);
+    } else {
+      finishMainChallenges();
+    }
+  } else {
+    if (state.currentChallenge < BONUS_CHALLENGES.length - 1) {
+      loadChallenge(state.currentChallenge + 1);
+    } else {
+      finishGame();
+    }
+  }
+}
+
+function finishMainChallenges() {
+  clearInterval(state.timerInterval);
+  // All dots done
+  CHALLENGES.forEach((_, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    const mission = document.getElementById(`mission-${i}`);
+    if (dot) dot.className = 'dot done';
+    if (mission) mission.className = 'mission-item done';
+  });
+
+  const allCorrect = state.codeFragments.every(c => c !== null);
+  if (allCorrect) {
+    showToast('✓ Código completo desbloqueado', 'success');
+    setTimeout(() => finishGame(), 1500);
+  } else {
+    setTimeout(() => finishGame(), 1000);
+  }
+}
+
+function finishGame() {
+  clearInterval(state.timerInterval);
+  const code = state.codeFragments.map(c => c || '?').join('');
+  const elapsed = getElapsedTime();
+
+  document.getElementById('end-code-display').textContent = code.split('').join(' ');
+  document.getElementById('stat-correct').textContent = state.correctAnswers + '/' + CHALLENGES.length;
+  document.getElementById('stat-errors').textContent = state.totalErrors;
+  document.getElementById('stat-time').textContent = elapsed;
+
+  showScreen('end');
+}
+
+// ============================================================
+// BONUS
+// ============================================================
+function goToBonus() {
+  state.phase = 'bonus';
+  state.currentChallenge = 0;
+  showScreen('bonus');
+  loadBonusChallenge(0);
+}
+
+function loadBonusChallenge(index) {
+  state.currentChallenge = index;
+  const c = BONUS_CHALLENGES[index];
+  const container = document.getElementById('bonus-challenges');
+
+  let answerHTML = `<div class="answer-options">
+    ${c.options.map((opt, i) => `
+      <button class="option-btn" onclick="selectBonus(${i})" id="bopt-${i}">
+        <span class="option-letter">${String.fromCharCode(65+i)}</span>${opt}
+      </button>`).join('')}
+  </div>`;
+
+  container.innerHTML = `
+    <div class="challenge-tag" style="margin-bottom:1.5rem">${c.tag}</div>
+    <div class="challenge-title" style="font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;letter-spacing:-0.02em">${c.title}</div>
+    <div class="challenge-body">${c.body}</div>
+    <div class="answer-section" style="margin-top:1.5rem">
+      <span class="answer-label">Selecciona la respuesta</span>
+      ${answerHTML}
+    </div>
+    <button class="hint-toggle" onclick="toggleBonusHint()">💡 Pedir pista</button>
+    <div class="hint-content" id="bonus-hint">${c.hint}</div>
+    <div class="feedback-box" id="bonus-feedback"></div>
+    <button class="btn-next" id="bonus-next" style="display:none" onclick="nextBonus()">
+      ${index < BONUS_CHALLENGES.length - 1 ? 'SIGUIENTE RETO →' : 'VER RESULTADOS FINALES →'}
+    </button>
+  `;
+}
+
+function selectBonus(idx) {
+  const c = BONUS_CHALLENGES[state.currentChallenge];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+  if (idx === c.correct) {
+    buttons[idx].classList.add('correct');
+    state.bonusCorrect++;
+    const fb = document.getElementById('bonus-feedback');
+    fb.className = 'feedback-box correct';
+    fb.innerHTML = `<strong>✓ CORRECTO</strong> — ${c.feedback_correct}`;
+  } else {
+    buttons[idx].classList.add('wrong');
+    buttons[c.correct].classList.add('correct');
+    const fb = document.getElementById('bonus-feedback');
+    fb.className = 'feedback-box wrong';
+    fb.innerHTML = `<strong>✗ INCORRECTO</strong> — ${c.feedback_wrong}`;
+  }
+  document.getElementById('bonus-next').style.display = 'inline-block';
+}
+
+function toggleBonusHint() {
+  document.getElementById('bonus-hint').classList.toggle('visible');
+}
+
+function nextBonus() {
+  if (state.currentChallenge < BONUS_CHALLENGES.length - 1) {
+    loadBonusChallenge(state.currentChallenge + 1);
+  } else {
+    finishGame();
+  }
+}
+
+// Expose to end screen
+document.addEventListener('DOMContentLoaded', () => {});
+
+// ============================================================
+// COPY REPORT
+// ============================================================
+function copyReport() {
+  const code = state.codeFragments.map(c => c || '?').join('');
+  const elapsed = getElapsedTime();
+  const report = `=== INFORME NEXUS ESCAPE ROOM ===
+Analista: ${state.agentName}
+Fecha: ${new Date().toLocaleDateString('es-ES')}
+Hora de entrega: ${new Date().toLocaleTimeString('es-ES')}
+
+Código de acceso obtenido: ${code}
+Respuestas correctas: ${state.correctAnswers}/${CHALLENGES.length}
+Errores cometidos: ${state.totalErrors}
+Tiempo empleado: ${elapsed}
+Retos bonus completados: ${state.phase === 'bonus' ? state.bonusCurrent + '/' + BONUS_CHALLENGES.length : 'No realizados'}
+================================`;
+
+  navigator.clipboard.writeText(report).then(() => {
+    showToast('✓ Resumen copiado al portapapeles', 'success');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = report;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ Resumen copiado', 'success');
+  });
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+
+  // Add bonus button to end screen if not already
+  if (name === 'end') {
+    const endContent = document.querySelector('.end-content');
+    if (!document.getElementById('bonus-btn') && state.phase === 'main') {
+      const btn = document.createElement('button');
+      btn.id = 'bonus-btn';
+      btn.className = 'btn-primary';
+      btn.style.marginTop = '1.5rem';
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--accent3)';
+      btn.style.border = '1px solid var(--accent3)';
+      btn.style.fontSize = '12px';
+      btn.textContent = '⚡ ACCEDER A RETOS EXTRA (AVANZADO)';
+      btn.onclick = goToBonus;
+      endContent.appendChild(btn);
+    }
+  }
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+</script>
+</body>
+</html>
