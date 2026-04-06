@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguridad Digital – Dosier de Consulta</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #00d4aa;
+    --accent2: #ff6b6b;
+    --accent3: #ffd93d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 56px;
+  }
+
+  .site-header .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .site-header h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 4rem;
+    max-width: 860px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .hero h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .hero h2 span {
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* NAV INDEX */
+  .toc {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+
+  .toc-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,170,0.05);
+  }
+
+  .toc-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 24px;
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1rem 2rem 5rem;
+  }
+
+  /* SECTION */
+  .section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.25);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-top: 5px;
+    white-space: nowrap;
+  }
+
+  .section h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .subsection {
+    margin-top: 2.5rem;
+  }
+
+  .subsection h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .subsection h3::before {
+    content: '//';
+    font-family: var(--mono);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* CALLOUT BOXES */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 1.2rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+
+  .callout.warning {
+    border-left-color: var(--accent3);
+  }
+
+  .callout.danger {
+    border-left-color: var(--accent2);
+  }
+
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .callout.warning .callout-label { color: var(--accent3); }
+  .callout.danger .callout-label { color: var(--accent2); }
+
+  .callout p {
+    margin: 0;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* DEFINITION CARDS */
+  .def-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .def-grid { grid-template-columns: 1fr; }
+  }
+
+  .def-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+  }
+
+  .def-card h4 {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .def-card p {
+    font-size: 13px;
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .checklist li::before {
+    content: '›';
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 1rem;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+
+  /* PASSWORD TABLE */
+  .pwd-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 13px;
+  }
+
+  .pwd-table th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pwd-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .pwd-table tr:hover td { background: var(--surface); }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .badge.good { background: rgba(0,212,170,0.15); color: var(--accent); }
+  .badge.bad { background: rgba(255,107,107,0.15); color: var(--accent2); }
+
+  /* CODE INLINE */
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  /* THREAT CARDS */
+  .threat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .threat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent2);
+    border-radius: 0 0 8px 8px;
+    padding: 1.2rem;
+  }
+
+  .threat-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .threat-card p {
+    font-size: 13px;
+    margin: 0;
+  }
+
+  /* FOOTER */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; color: #111; }
+    .site-header { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="tag">Digitalización · 4º ESO</span>
+  <h1>Dosier de Consulta — Seguridad y Bienestar Digital</h1>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Unidad 5 · Documento de referencia</div>
+  <h2>Seguridad<br><span>y Bienestar Digital</span></h2>
+  <p>Todo lo que necesitas saber para proteger tus dispositivos, tu identidad en la red y tu bienestar cuando interactúas en entornos digitales. Consulta este documento cuando lo necesites.</p>
+</div>
+
+<nav class="toc">
+  <div class="toc-title">Índice de contenidos</div>
+  <div class="toc-grid">
+    <a href="#s1" class="toc-item"><span class="toc-num">5.1</span> Seguridad de los dispositivos</a>
+    <a href="#s11" class="toc-item"><span class="toc-num">5.1.1</span> Medidas preventivas</a>
+    <a href="#s12" class="toc-item"><span class="toc-num">5.1.2</span> Herramientas de protección</a>
+    <a href="#s2" class="toc-item"><span class="toc-num">5.2</span> Seguridad de los datos</a>
+    <a href="#s21" class="toc-item"><span class="toc-num">5.2.1</span> Identidad digital</a>
+    <a href="#s22" class="toc-item"><span class="toc-num">5.2.2</span> Reputación digital</a>
+    <a href="#s23" class="toc-item"><span class="toc-num">5.2.3</span> Privacidad en redes sociales</a>
+    <a href="#s3" class="toc-item"><span class="toc-num">5.3</span> Salud física y mental</a>
+    <a href="#s4" class="toc-item"><span class="toc-num">+</span> Amenazas en la red</a>
+  </div>
+</nav>
+
+<main class="content">
+
+  <!-- 5.1 -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">5.1</span>
+      <h2>Seguridad de los dispositivos</h2>
+    </div>
+
+    <p>Proteger nuestros dispositivos requiere entender que existen dos tipos de medidas: las que actúan <strong>después</strong> de que ocurra un problema, y las que actúan <strong>antes</strong> de que ocurra. La diferencia entre ambas puede ser enorme.</p>
+
+    <div class="def-grid">
+      <div class="def-card">
+        <h4>Medidas correctivas</h4>
+        <p>Soluciones aplicadas <strong>después</strong> de que se produce un incidente. Pueden ser reactivas (respuesta inmediata) o proactivas (evitar que se repita). Son costosas y no siempre reparables.</p>
+      </div>
+      <div class="def-card">
+        <h4>Medidas preventivas</h4>
+        <p>Acciones tomadas <strong>antes</strong> de que surja un problema. Su objetivo es identificar, anticipar y mitigar riesgos. Son más eficaces y mucho menos dañinas que las correctivas.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Regla fundamental</div>
+      <p>Siempre es mejor <strong>prevenir que corregir</strong>. Las medidas correctivas suelen ser más costosas, más lentas y a veces irreversibles. Invierte tiempo en protegerte antes de que ocurra algo.</p>
+    </div>
+  </section>
+
+  <!-- 5.1.1 -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">5.1.1</span>
+      <h2>Medidas preventivas</h2>
+    </div>
+
+    <div class="subsection">
+      <h3>Mantener el dispositivo actualizado</h3>
+      <p>Las actualizaciones de software no solo añaden funciones nuevas: su objetivo principal es corregir vulnerabilidades de seguridad detectadas. Un dispositivo sin actualizar es un dispositivo con brechas conocidas que los atacantes pueden explotar.</p>
+      <div class="callout warning">
+        <div class="callout-label">Importante</div>
+        <p>Activar las actualizaciones automáticas en el sistema operativo (Windows, macOS, Android, iOS) es una de las acciones más sencillas y eficaces que puedes tomar.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>Protección frente a accesos no deseados</h3>
+      <p>La primera barrera de seguridad de cualquier dispositivo es el control de acceso. Sin él, cualquiera que tenga acceso físico al dispositivo tiene acceso a todo lo que hay en él.</p>
+      <ul class="checklist">
+        <li><strong>Bloqueo de pantalla:</strong> usa un PIN, patrón, huella digital o reconocimiento facial. Activa el bloqueo automático tras unos pocos minutos de inactividad.</li>
+        <li><strong>Contraseña de aplicaciones:</strong> para apps sensibles (correo, galería, banca) activa un nivel de acceso adicional.</li>
+        <li><strong>No compartas tus claves</strong> con nadie, ni siquiera con personas de confianza.</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3>Cifrado del dispositivo</h3>
+      <p>El cifrado convierte los datos del dispositivo en información ilegible para quien no tenga la clave correcta. Aunque alguien extraiga físicamente los datos del teléfono, no podrá leerlos. La mayoría de versiones modernas de Android e iOS ofrecen cifrado nativo.</p>
+      <div class="callout danger">
+        <div class="callout-label">Advertencia</div>
+        <p>Activar el cifrado puede tardar tiempo y consume batería. Se recomienda hacerlo con el dispositivo enchufado. Desactivarlo requiere un reseteo de fábrica: <strong>se pierden todos los datos.</strong></p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>Gestión de contraseñas</h3>
+      <p>Una contraseña segura debe cumplir varios criterios. El problema es que cuantas más cuentas tenemos, más difícil es recordar contraseñas distintas para cada una. La tentación de reutilizar contraseñas es enorme pero peligrosísima: si hackean un servicio, tienen acceso a todos los demás.</p>
+
+      <table class="pwd-table">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Contraseña débil</th>
+            <th>Contraseña fuerte</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Longitud</td>
+            <td>Menos de 8 caracteres</td>
+            <td>12 o más caracteres</td>
+          </tr>
+          <tr>
+            <td>Composición</td>
+            <td>Solo letras o solo números</td>
+            <td>Letras, números y símbolos</td>
+          </tr>
+          <tr>
+            <td>Predecibilidad</td>
+            <td>Nombre, fecha, «123456»</td>
+            <td>Sin relación con datos personales</td>
+          </tr>
+          <tr>
+            <td>Reutilización</td>
+            <td>Misma contraseña en varias cuentas</td>
+            <td>Contraseña única por cuenta</td>
+          </tr>
+          <tr>
+            <td>Estado</td>
+            <td>No se cambia nunca</td>
+            <td>Se renueva periódicamente</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Para gestionar muchas contraseñas distintas de forma segura existen los <strong>gestores de contraseñas</strong> (como NordPass o LastPass). Solo necesitas recordar una contraseña maestra; el gestor almacena y cifra todas las demás.</p>
+    </div>
+
+    <div class="subsection">
+      <h3>Autenticación en dos factores (2FA)</h3>
+      <p>La autenticación en dos factores añade una segunda capa de verificación además de la contraseña. Aunque alguien conozca tu contraseña, no podrá acceder a tu cuenta sin el segundo factor (habitualmente un código que llega a tu móvil o se genera en una app).</p>
+      <div class="callout">
+        <div class="callout-label">Recomendación</div>
+        <p>Activa el 2FA en todas las cuentas que lo permitan: correo electrónico, redes sociales, banca online. Es el método más eficaz para proteger cuentas frente a accesos no autorizados.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>Detección de usos no controlados</h3>
+      <p>Revisar periódicamente el dispositivo te permite detectar si algo inusual está ocurriendo:</p>
+      <ul class="checklist">
+        <li>Comprueba las <strong>aplicaciones instaladas</strong>: si hay alguna que no recuerdas haber instalado, puede ser malware.</li>
+        <li>Revisa el <strong>consumo de datos</strong>: picos de uso inusuales pueden indicar que una app está enviando información sin tu conocimiento.</li>
+        <li>En caso de pérdida o robo, usa herramientas <strong>antirrobo</strong> para localizar, bloquear o borrar el dispositivo de forma remota.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5.1.2 -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">5.1.2</span>
+      <h2>Herramientas de protección</h2>
+    </div>
+    <p>Existen herramientas gratuitas que complementan las medidas preventivas. Descárgalas siempre desde plataformas oficiales y mantenlas actualizadas.</p>
+    <ul class="checklist">
+      <li><strong>Antivirus:</strong> Malwarebytes Mobile Security detecta y elimina malware en tiempo real.</li>
+      <li><strong>Gestor de contraseñas:</strong> NordPass / LastPass almacenan tus claves de forma cifrada.</li>
+      <li><strong>Galería protegida:</strong> Secure Gallery protege el acceso a tus fotos y vídeos.</li>
+      <li><strong>Antirrobo:</strong> Lock It Tight permite localizar y bloquear el dispositivo remotamente.</li>
+      <li><strong>Cifrado en ordenador:</strong> BitLocker (Windows) y FileVault (macOS) cifran el disco completo.</li>
+    </ul>
+  </section>
+
+  <!-- 5.2 -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">5.2</span>
+      <h2>Seguridad de los datos</h2>
+    </div>
+    <p>Nuestra presencia en Internet es tan significativa como nuestra vida fuera de la red. Cada clic, cada publicación y cada registro contribuye a construir una representación digital de quiénes somos. Gestionar esto de forma responsable es fundamental.</p>
+  </section>
+
+  <!-- 5.2.1 -->
+  <section class="section" id="s21">
+    <div class="section-header">
+      <span class="section-num">5.2.1</span>
+      <h2>Identidad digital</h2>
+    </div>
+    <p>La <strong>identidad digital</strong> es la representación virtual de quién eres en el mundo online: tu nombre, fotos, perfiles en redes sociales, direcciones de correo electrónico, historial de publicaciones, etc.</p>
+
+    <div class="subsection">
+      <h3>Huella digital</h3>
+      <p>La <strong>huella digital</strong> es el rastro de datos que dejamos al navegar por Internet. Puede ser <strong>activa</strong> (lo que publicamos conscientemente) o <strong>pasiva</strong> (los datos que se recopilan sin que lo sepamos: ubicación, cookies, tiempo de navegación, dispositivos usados).</p>
+      <div class="callout warning">
+        <div class="callout-label">Ten en cuenta</div>
+        <p>La huella digital es prácticamente <strong>permanente e imposible de borrar por completo</strong>. Lo que publicas hoy puede encontrarse dentro de 10 años. Piensa antes de publicar.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>Cómo proteger tu identidad digital</h3>
+      <ul class="checklist">
+        <li><strong>Contraseñas fuertes y 2FA</strong> en todas tus cuentas para evitar que alguien suplante tu identidad.</li>
+        <li><strong>Sé selectivo</strong> al compartir datos personales. No todo el mundo necesita saber tu dirección, número de teléfono o fecha de nacimiento.</li>
+        <li><strong>Busca tu nombre en Google</strong> periódicamente para saber qué información tuya está disponible públicamente.</li>
+        <li><strong>Cierra sesión</strong> en dispositivos compartidos y revisa los accesos activos a tus cuentas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5.2.2 -->
+  <section class="section" id="s22">
+    <div class="section-header">
+      <span class="section-num">5.2.2</span>
+      <h2>Reputación digital</h2>
+    </div>
+    <p>La <strong>reputación digital</strong> es la imagen que proyectas en Internet a partir de lo que publicas, los comentarios que dejas, las fotos en las que apareces y cómo interactúas con los demás. Construirla lleva tiempo; destruirla puede ser cuestión de minutos.</p>
+
+    <ul class="checklist">
+      <li><strong>Publica contenido de valor:</strong> logros, aprendizajes, contribuciones a tu comunidad. Proyecta la imagen que quieres que otros tengan de ti.</li>
+      <li><strong>Cuida tus comentarios:</strong> lo que escribes en reviews, foros y redes sociales queda registrado y puede encontrarse. Evita respuestas impulsivas o agresivas.</li>
+      <li><strong>No te conviertas en un trol:</strong> los comentarios negativos, difamatorios o acosadores tienen consecuencias legales además de dañar tu reputación.</li>
+      <li><strong>Revisa tus etiquetas:</strong> controla las fotos y publicaciones en las que otros te etiquetan.</li>
+    </ul>
+
+    <div class="callout danger">
+      <div class="callout-label">Riesgo real</div>
+      <p>Empresas, universidades y empleadores realizan búsquedas online de los candidatos antes de tomar decisiones. Tu huella digital puede abrirte puertas o cerrártelas. No es algo que ocurra en un futuro lejano: ocurre ahora.</p>
+    </div>
+  </section>
+
+  <!-- 5.2.3 -->
+  <section class="section" id="s23">
+    <div class="section-header">
+      <span class="section-num">5.2.3</span>
+      <h2>Privacidad en redes sociales</h2>
+    </div>
+    <p>Las redes sociales son el principal espacio donde construimos nuestra presencia digital. Configurar correctamente la privacidad es esencial.</p>
+
+    <ul class="checklist">
+      <li><strong>Perfil privado:</strong> ajusta quién puede ver tus publicaciones, fotos y datos. En Instagram, TikTok o Twitter puedes limitar el acceso solo a seguidores aprobados.</li>
+      <li><strong>Revisa los permisos de las apps:</strong> muchas aplicaciones acceden a tu ubicación, micrófono, cámara y contactos sin que sea necesario para su funcionamiento.</li>
+      <li><strong>Selecciona tus conexiones:</strong> no tienes por qué aceptar solicitudes de personas que no conoces. Más seguidores no significa más seguridad.</li>
+      <li><strong>Cuidado con el geoetiquetado:</strong> publicar tu ubicación en tiempo real puede comprometer tu seguridad física.</li>
+      <li><strong>Lee (al menos) el resumen de las políticas de privacidad</strong> antes de registrarte en un nuevo servicio. Saber qué datos cedes es tu derecho.</li>
+    </ul>
+  </section>
+
+  <!-- 5.3 -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">5.3</span>
+      <h2>Seguridad en la salud física y mental</h2>
+    </div>
+    <p>El mundo digital también tiene impacto en nuestro bienestar físico y emocional. Reconocer y gestionar estos riesgos es parte fundamental de una vida digital saludable.</p>
+
+    <div class="subsection">
+      <h3>Salud física</h3>
+      <ul class="checklist">
+        <li><strong>Ergonomía:</strong> una silla y mesa adecuadas, el monitor a la altura correcta y el teclado en posición neutral reducen el riesgo de lesiones posturales crónicas.</li>
+        <li><strong>Fatiga visual:</strong> la regla 20-20-20 ayuda a reducirla: cada 20 minutos, mira a un punto a 20 metros durante 20 segundos.</li>
+        <li><strong>Descansos activos:</strong> levantarse, estirarse y moverse cada 45-60 minutos mejora la circulación y la concentración.</li>
+        <li><strong>Luz azul:</strong> activa el modo noche o usa filtros de luz azul por la tarde para no alterar el ciclo del sueño.</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3>Salud mental</h3>
+      <ul class="checklist">
+        <li><strong>Límites de uso:</strong> establecer un tiempo máximo de pantalla diario y cumplirlo es una práctica de higiene digital igual de importante que el sueño o la alimentación.</li>
+        <li><strong>Comparación social:</strong> las redes sociales muestran una versión editada y curada de la realidad. Compararse con esa imagen distorsionada es una fuente de ansiedad e insatisfacción.</li>
+        <li><strong>FOMO (Fear Of Missing Out):</strong> la necesidad de estar siempre conectado para no perderse nada genera estrés y dependencia. Desconectar no es perderse nada: es recuperar tiempo propio.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5.4 Amenazas -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">+</span>
+      <h2>Amenazas en la red</h2>
+    </div>
+    <p>Conocer las amenazas más comunes es el primer paso para no caer en ellas.</p>
+
+    <div class="threat-grid">
+      <div class="threat-card">
+        <h4>Phishing</h4>
+        <p>Correos, SMS o webs falsas que imitan a empresas o personas de confianza para robarte credenciales o datos bancarios. Siempre verifica el remitente y la URL antes de introducir datos.</p>
+      </div>
+      <div class="threat-card">
+        <h4>Malware</h4>
+        <p>Software malicioso (virus, troyanos, ransomware) que se instala sin tu permiso. Puede robar datos, cifrar tus archivos o convertir tu dispositivo en parte de una red de ataque.</p>
+      </div>
+      <div class="threat-card">
+        <h4>Ingeniería social</h4>
+        <p>Técnicas de manipulación psicológica para conseguir que reveles información confidencial o realices acciones que beneficien al atacante. No necesita código: explota la confianza humana.</p>
+      </div>
+      <div class="threat-card">
+        <h4>Ciberacoso</h4>
+        <p>Hostigamiento, amenazas o humillación repetida a través de medios digitales. Tiene consecuencias legales graves. Si lo sufres o lo presencias, comunícalo a un adulto de confianza inmediatamente.</p>
+      </div>
+      <div class="threat-card">
+        <h4>Grooming</h4>
+        <p>Proceso por el que un adulto se gana la confianza de un menor online con fines de abuso sexual. Señales de alerta: alguien que pide secretismo, regalos o fotos personales.</p>
+      </div>
+      <div class="threat-card">
+        <h4>Sexting no consentido</h4>
+        <p>Compartir imágenes íntimas de otra persona sin su consentimiento es un <strong>delito</strong> en España. Si estás siendo coaccionado, comunícalo a tus adultos más cercanos cuanto antes.</p>
+      </div>
+    </div>
+
+    <div class="callout danger" style="margin-top:2rem">
+      <div class="callout-label">Recuerda siempre</div>
+      <p>Ante cualquier situación que te haga sentir incómodo, amenazado o en peligro en Internet: <strong>no estás solo y no es tu culpa.</strong> Busca ayuda en un adulto de confianza, en tu centro educativo o en la Policía Nacional (línea de menores: 900 150 000).</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  Digitalización · 4º ESO &nbsp;·&nbsp; Documento de consulta · Unidad 5
+</footer>
+
+</body>
+</html>
